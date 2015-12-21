@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.3)
-set(meme_SRCS main.cpp Meme.h MemeGenerator.h)
+set(meme_SRCS main.cpp Meme.h MemeGenerator.h jsoncpp.cpp json/json.h)
 add_definitions(-std=c++14)
 add_executable(memegen ${meme_SRCS})
 target_link_libraries(memegen curlpp curl )
