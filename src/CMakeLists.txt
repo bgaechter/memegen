@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.3)
+find_package(Boost COMPONENTS program_options REQUIRED)
+include_directories(${Boost_INCLUDE_DIRS})
 set(meme_SRCS main.cpp Meme.h MemeGenerator.h jsoncpp.cpp json/json.h)
 add_definitions(-std=c++14)
 add_executable(memegen ${meme_SRCS})
-target_link_libraries(memegen curlpp curl )
+target_link_libraries(memegen curlpp curl ${Boost_LIBRARIES} )
