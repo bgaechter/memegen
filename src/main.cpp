@@ -4,9 +4,19 @@
 #include <iostream>
 #include <string>
 #include <iterator>
-
+#include <stdexcept>
 
 namespace po = boost::program_options;
+
+void option_dependency(const po::variables_map& vm,
+		const char* for_what, const char* required_option)
+{
+	if (vm.count(for_what) && !vm[for_what].defaulted())
+		if (vm.count(required_option) == 0 || vm[required_option].defaulted())
+			throw std::logic_error(std::string("Option '") + for_what 
+					+ "' requires option '" + required_option + "'.");
+}
+
 
 int main(int ac, char* av[]){
 
@@ -26,13 +36,16 @@ int main(int ac, char* av[]){
 	po::variables_map vm;
 	po::store(po::parse_command_line(ac,av,desc),vm);
 	po::notify(vm);
-	
-	option_dependency(vm, "create", "meme");
-	option_dependency(vm, "create", "caption-top");
-	option_dependency(vm, "create", "caption-bottom");
-	option_dependency(vm, "create", "user");
-	option_dependency(vm, "create", "password");
-
+	try{
+		option_dependency(vm, "create", "meme");
+		option_dependency(vm, "create", "caption-top");
+		option_dependency(vm, "create", "caption-bottom");
+		option_dependency(vm, "create", "user");
+		option_dependency(vm, "create", "password");
+	}
+	catch(std::exception& e){
+		std::cerr << e.what() << "\n";
+	}
 	if(vm.count("help") || ac <=1 ){
 		std::cout << desc << "\n";
 		return 0;
