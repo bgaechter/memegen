@@ -15,7 +15,8 @@ int main(int ac, char* av[]){
 	desc.add_options()
 		("help", "display this message")
 		("meme", po::value<std::string>(), "specify the name of the meme")
-		("caption", po::value<std::string>(), "give a caption (meme tex)")
+		("caption-top", po::value<std::string>(), "text displayed on top of the meme")
+		("caption-bottom", po::value<std::string>(), "text displayed at the bottom of the meme")
 		("user", po::value<std::string>(), "user name for your memegenerator.net account")
 		("password", po::value<std::string>(), "password for your memegenerator.net account")
 		("create", "create a meme")
@@ -26,6 +27,11 @@ int main(int ac, char* av[]){
 	po::store(po::parse_command_line(ac,av,desc),vm);
 	po::notify(vm);
 	
+	option_dependency(vm, "create", "meme");
+	option_dependency(vm, "create", "caption-top");
+	option_dependency(vm, "create", "caption-bottom");
+	option_dependency(vm, "create", "user");
+	option_dependency(vm, "create", "password");
 
 	if(vm.count("help") || ac <=1 ){
 		std::cout << desc << "\n";
@@ -38,17 +44,9 @@ int main(int ac, char* av[]){
 		mg.printPopularMemes(std::cout);
 	}
 
-	if(vm.count("test")){
-		
-		std::cout << "Testing...";
-		MemeGenerator mg{};
-		std::cout << mg.getImageID("Insanity-Wolf");
-	
-	}
-
 	if(vm.count("create")){
 		MemeGenerator mg{};
-		mg.createMeme(vm["user"].as<std::string>(), vm["password"].as<std::string>(), vm["meme"].as<std::string>(), vm["caption"].as<std::string>(), "test");
+		mg.createMeme(vm["user"].as<std::string>(), vm["password"].as<std::string>(), vm["meme"].as<std::string>(), vm["caption-top"].as<std::string>(), vm["caption-bottom"].as<std::string>());
 	}
 
 	return 0;
