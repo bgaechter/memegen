@@ -18,7 +18,9 @@ int main(int ac, char* av[]){
 		("caption", po::value<std::string>(), "give a caption (meme tex)")
 		("user", po::value<std::string>(), "user name for your memegenerator.net account")
 		("password", po::value<std::string>(), "password for your memegenerator.net account")
-		("list-popular", "list all popular memes");
+		("create", "create a meme")
+		("list-popular", "list all popular memes")
+		("test", "used to call test function");
 
 	po::variables_map vm;
 	po::store(po::parse_command_line(ac,av,desc),vm);
@@ -35,5 +37,19 @@ int main(int ac, char* av[]){
 		MemeGenerator mg{};
 		mg.printPopularMemes(std::cout);
 	}
+
+	if(vm.count("test")){
+		
+		std::cout << "Testing...";
+		MemeGenerator mg{};
+		std::cout << mg.getImageID("Insanity-Wolf");
+	
+	}
+
+	if(vm.count("create")){
+		MemeGenerator mg{};
+		mg.createMeme(vm["user"].as<std::string>(), vm["password"].as<std::string>(), vm["meme"].as<std::string>(), vm["caption"].as<std::string>(), "test");
+	}
+
 	return 0;
 }
